@@ -96,6 +96,7 @@ public class FirstFragment extends Fragment {
     int listIndex;
     int listLength;
 
+
     private SensorEventListener mListener =  new SensorEventListener() {
         @Override
         public void onSensorChanged(SensorEvent event) {
