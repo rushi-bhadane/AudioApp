@@ -42,35 +42,28 @@ public class MainActivity extends AppCompatActivity {
 
         surfaceView = findViewById(R.id.surfaceView);
         surfaceHolder = surfaceView.getHolder();
-        surfaceHolder.addCallback(surfaceHolderCallback);
     }
 
-    private final SurfaceHolder.Callback surfaceHolderCallback = new SurfaceHolder.Callback() {
-        @Override
-        public void surfaceCreated(SurfaceHolder holder) {
-            openCamera();
+    // This method is now public and can be called from FirstFragment to start the camera preview
+    public void startCameraPreview() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA_PERMISSION);
+            return;
         }
-
-        @Override
-        public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-            // Handle surface changes if necessary
-        }
-
-        @Override
-        public void surfaceDestroyed(SurfaceHolder holder) {
-            // Release the camera in onPause() or onStop()
-        }
-    };
+        openCamera();
+    }
 
     private void openCamera() {
         CameraManager manager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
         try {
             cameraId = manager.getCameraIdList()[0];
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            // Check if the CAMERA permission has been granted
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+                manager.openCamera(cameraId, stateCallback, null);
+            } else {
+                // Request camera permission if it has not been granted
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA_PERMISSION);
-                return;
             }
-            manager.openCamera(cameraId, stateCallback, null);
         } catch (CameraAccessException e) {
             e.printStackTrace();
             Toast.makeText(this, "Failed to open camera.", Toast.LENGTH_SHORT).show();
@@ -129,6 +122,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        closeCamera();
+    }
+
+    private void closeCamera() {
         if (captureSession != null) {
             captureSession.close();
             captureSession = null;
@@ -141,15 +138,13 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == REQUEST_CAMERA_PERMISSION) {
-            if (grantResults.length != 1 || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(this, "Camera permission is necessary", Toast.LENGTH_LONG).show();
+            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                startCameraPreview();
             } else {
-                // Permission has been granted, open camera
-                openCamera();
+                Toast.makeText(this, "Camera permission is necessary", Toast.LENGTH_LONG).show();
             }
-        } else {
-            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
 }

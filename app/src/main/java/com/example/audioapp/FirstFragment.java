@@ -314,6 +314,7 @@ public class FirstFragment extends Fragment {
         phrase_type = 0;
         wavplaying = view.findViewById(R.id.textView);
         mvideo = view.findViewById(R.id.surfaceView);
+        mvideo.setVisibility(View.GONE); // Initially hide the SurfaceView
         type = view.findViewById(R.id.type);
         loop = view.findViewById(R.id.loop);
         pause2 = view.findViewById(R.id.pause2);
@@ -324,6 +325,20 @@ public class FirstFragment extends Fragment {
         musiclist = FileUtil.getWavFilesStrings();
         listIndex = 0;
         listLength = musiclist.length;
+
+
+
+        Button cameraButton = view.findViewById(R.id.cameraButton);
+        cameraButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Show the SurfaceView when the camera button is clicked
+                mvideo.setVisibility(View.VISIBLE);
+
+                // Call MainActivity's method to start camera preview
+                ((MainActivity) getActivity()).startCameraPreview();
+            }
+        });
 
         previous.setOnClickListener(new View.OnClickListener() {
             @Override
