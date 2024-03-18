@@ -159,6 +159,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/phrases" />
 
+
+
     <!-- Button with Camera Logo -->
     <Button
         android:id="@+id/cameraButton"
