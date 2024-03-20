@@ -98,6 +98,8 @@ public class FirstFragment extends Fragment {
     int listIndex;
     int listLength;
 
+    private Button clickPicButton;
+
     private static final int REQUEST_PERMISSIONS_CODE = 100; // Request code for permissions
 
     // Updated permissions list to include CAMERA
@@ -326,7 +328,13 @@ public class FirstFragment extends Fragment {
         listIndex = 0;
         listLength = musiclist.length;
 
-
+        clickPicButton = view.findViewById(R.id.click_pic_button);
+        clickPicButton.setOnClickListener(v -> {
+            MainActivity activity = (MainActivity) getActivity();
+            if (activity != null) {
+                activity.takePicture();
+            }
+        });
 
         Button cameraButton = view.findViewById(R.id.cameraButton);
         cameraButton.setOnClickListener(new View.OnClickListener() {
