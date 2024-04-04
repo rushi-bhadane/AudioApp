@@ -63,6 +63,8 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+
+
 //@RequiresApi(api = Build.VERSION_CODES.KITKAT)
 public class FirstFragment extends Fragment {
     //Motion
@@ -96,6 +98,47 @@ public class FirstFragment extends Fragment {
     String[] musiclist;
     int listIndex;
     int listLength;
+
+    private Button clickPicButton;
+
+    private static final int REQUEST_PERMISSIONS_CODE = 100; // Request code for permissions
+
+    // Updated permissions list to include CAMERA
+    private static final String[] PERMISSIONS_REQUIRED = {
+            Manifest.permission.RECORD_AUDIO,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.CAMERA // Added camera permission
+    };
+
+    // Checks and requests for necessary permissions
+    public static void verifyPermissions(Activity activity) {
+        boolean allPermissionsGranted = true;
+        for (String permission : PERMISSIONS_REQUIRED) {
+            if (ActivityCompat.checkSelfPermission(activity, permission) != PackageManager.PERMISSION_GRANTED) {
+                allPermissionsGranted = false;
+                break;
+            }
+        }
+        if (!allPermissionsGranted) {
+            ActivityCompat.requestPermissions(activity, PERMISSIONS_REQUIRED, REQUEST_PERMISSIONS_CODE);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_PERMISSIONS_CODE) {
+            for (int grantResult : grantResults) {
+                if (grantResult != PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(getContext(), "All permissions are required for the app to function", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            }
+            // All permissions have been granted, proceed with functionality that requires permissions
+        }
+    }
+
 
     private SensorEventListener mListener =  new SensorEventListener() {
         @Override
@@ -276,6 +319,7 @@ public class FirstFragment extends Fragment {
         phrase_type = 0;
         wavplaying = view.findViewById(R.id.textView);
         mvideo = view.findViewById(R.id.surfaceView);
+        mvideo.setVisibility(View.GONE); // Initially hide the SurfaceView
         type = view.findViewById(R.id.type);
         loop = view.findViewById(R.id.loop);
         pause2 = view.findViewById(R.id.pause2);
@@ -286,6 +330,26 @@ public class FirstFragment extends Fragment {
         musiclist = FileUtil.getWavFilesStrings();
         listIndex = 0;
         listLength = musiclist.length;
+
+        clickPicButton = view.findViewById(R.id.click_pic_button);
+        clickPicButton.setOnClickListener(v -> {
+            MainActivity activity = (MainActivity) getActivity();
+            if (activity != null) {
+                activity.takePicture();
+            }
+        });
+
+        Button cameraButton = view.findViewById(R.id.cameraButton);
+        cameraButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Show the SurfaceView when the camera button is clicked
+                mvideo.setVisibility(View.VISIBLE);
+
+                // Call MainActivity's method to start camera preview
+                ((MainActivity) getActivity()).startCameraPreview();
+            }
+        });
 
         previous.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -548,6 +612,7 @@ public class FirstFragment extends Fragment {
     };
 
     /** get the permission of recording **/
+    /**
     public static void verifyPermissions(Activity activity) {
         boolean permission = (ActivityCompat.checkSelfPermission(activity, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED)
                 || (ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
@@ -557,4 +622,5 @@ public class FirstFragment extends Fragment {
                     GET_RECODE_AUDIO);
         }
     }
+     **/
 }

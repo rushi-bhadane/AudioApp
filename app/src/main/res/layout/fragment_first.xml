@@ -156,8 +156,11 @@
         android:layout_height="387dp"
         android:layout_marginTop="5dp"
         android:layout_marginEnd="16dp"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/phrases" />
+
+
 
     <!-- Button with Camera Logo -->
     <Button
@@ -165,11 +168,21 @@
         style="@style/Widget.AppCompat.Button.Small"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Camera"
+        android:text="Open Cam"
         android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/surfaceView" />
+
+    <Button
+        android:id="@+id/click_pic_button"
+        style="@style/Widget.AppCompat.Button.Small"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Capture"
+        app:layout_constraintTop_toBottomOf="@+id/surfaceView"
+        app:layout_constraintStart_toEndOf="@+id/cameraButton"
+        android:layout_marginTop="16dp"/>
 
     <Button
         android:id="@+id/pause2"
