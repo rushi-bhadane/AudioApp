@@ -67,6 +67,7 @@ import java.util.Map;
 public class FirstFragment extends Fragment {
     //Motion
     private TextView motionText = null;
+    private TFLiteHelper tfliteHelper;
 
     //Acceleration sensor: TYPE_ACCELEROMETER: include gravity
     private SensorManager mSensorManager;
@@ -256,6 +257,8 @@ public class FirstFragment extends Fragment {
 
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        //TFlitehelper integratio
+        tfliteHelper = new TFLiteHelper(getContext());
         Log.e("111", "onViewCreated");
         FileUtil.setBasePath(getActivity().getExternalFilesDir(null).toString());
         view.setOnTouchListener(new myOnTouchListener());
